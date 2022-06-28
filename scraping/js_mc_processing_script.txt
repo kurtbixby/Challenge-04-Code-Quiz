@@ -1,0 +1,23 @@
+// https://www.interviewbit.com/javascript-mcq/
+
+let scrapedSiteQuestions = document.querySelectorAll(".ibpage-mcq-problems__item");
+let myQuestions = [];
+
+scrapedSiteQuestions.forEach(element => {
+  let prompt = element.querySelector(".ibpage-mcq-problems__header p");
+  let choices = element.querySelectorAll(".ibpage-mcq-problems__options p");
+
+  let answer = element.querySelector(".ibpage-mcq-problems__options[data-correct='true'] p");
+
+  let myQuestion = {
+    prompt: prompt.innerText,
+    choices: [],
+    answer: answer.innerText,
+  }
+  
+  choices.forEach((element) => myQuestion.choices.push(element.innerText));
+  
+  myQuestions.push(myQuestion);
+})
+
+console.log(JSON.stringify(myQuestions));
