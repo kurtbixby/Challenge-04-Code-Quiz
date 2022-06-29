@@ -1,12 +1,11 @@
 import { allQuestions } from "./questions.js";
 // Look into using require and a .json file
 
-const CORRECTCLASS = "correct-answer";
-const INCORRECTCLASS = "incorrect-answer";
 const CHOICEBUTTONCLASS = "choice-button";
 
 const QUIZTIMELENGTH = 20;
 const QUIZQUESTIONLENGTH = 10;
+const QUESTIONSIZE = 4;
 
 const INCORRECTPENALTY = 15;
 
@@ -23,6 +22,8 @@ let quizTimer;
 let score = 0;
 let questionIndexIter;
 
+let questionSkeleton;
+
 class Timer {
     constructor(timerLength, timerElement, callback) {
         this.timeRemaining = timerLength;
@@ -33,6 +34,8 @@ class Timer {
     
     decrement(seconds) {
         this.timeRemaining = Math.max(0, this.timeRemaining - 1);
+        this.updateTimerElement();
+
         if (this.timeRemaining == 0) {
             if (this.interval != null) {
                 this.stop();
@@ -43,7 +46,6 @@ class Timer {
     
     tick = () => {
         this.decrement(1);
-        this.updateTimerElement();
     }
 
     start() {
@@ -74,10 +76,6 @@ function chooseQuestionIndices(chosen, possibleChoices) {
     }
 
     return indexSet.values();
-
-    // indexSet.forEach(element => indices.push(element));
-
-    // return indices;
 }
 
 function startQuiz() {
@@ -86,25 +84,51 @@ function startQuiz() {
     questionIndexIter = chooseQuestionIndices(QUIZQUESTIONLENGTH, allQuestions.length);
 
     // Hide the start screen
-    startScreenElement.style.visibility = "hidden";
+    startScreenElement.style.display = "hidden";
 
     // Initialize the timer
     quizTimer = new Timer(QUIZTIMELENGTH, timerText, endQuiz);
 
     // Initialize the score
 
-    document.querySelectorAll(".hud-element").forEach(element => element.style.visibility = "visible");
+
+    document.querySelectorAll(".hud-element").forEach(element => element.style.display = "block");
 
     // Create/show the first question
-    updateQuestion();
+    questionSkeleton = createQuestionSkeletonElement();
+    updateQuestion(questionSkeleton);
+
+    quizContainerElement.appendChild(questionSkeleton);
 
     // Start timer at the very end to be more generous
     quizTimer.start();
 }
 
+function updateQuestion(skeleton) {
+    let nextQuestionIndex = questionIndexIter.next();
+    if (nextQuestionIndex.done) {
+        // No more questions
+        quizTimer.stop();
+        endQuiz();
+    } else {
+        fillQuestionSkeleton(skeleton, allQuestions[nextQuestionIndex.value]);
+    }
+}
+
 function submitQuestion(event) {
+    let button = event.currentTarget;
+    console.debug("Submit Question");
+    console.debug(button);
+
+    if (!button.matches("." + CHOICEBUTTONCLASS)) {
+        console.debug("Doesn't match Class");
+        return;
+    }
+    event.stopPropagation();
+
+    console.debug("Matches Class");
     // Determine correctness
-    let correct = event.target.matches("." + CORRECTCLASS);
+    let correct = button.dataset.correct;
 
     // Update score
     // Update timer
@@ -114,22 +138,11 @@ function submitQuestion(event) {
     } else {
         quizTimer.decrement(INCORRECTPENALTY);
     }
-
-    updateQuestion();
+    
+    updateQuestion(questionSkeleton);
 
     // Append correct/incorrect element
     quizContainerElement.appendChild();
-}
-
-function updateQuestion() {
-    let nextQuestionIndex = questionIndexIter.next();
-    if (nextQuestionIndex.done) {
-        // No more questions
-        quizTimer.stop();
-        endQuiz();
-    }
-    let newQuestion = createQuestionElement(allQuestions[nextQuestionIndex.value]);
-    quizContainerElement.appendChild(newQuestion);
 }
 
 function endQuiz() {
@@ -149,51 +162,86 @@ function goToHighScores() {
 
 }
 
-function createQuestionElement(question) {
-    console.debug("Creating Question");
-    console.debug(question);
+/* 
+Creates the following HTML skeleton to fill with data
+<div class="quiz-question">
+    <h1></h1>
+    <button class="choice-button">A: <span></span></button>
+    <button class="choice-button">B: <span></span></button>
+    <button class="choice-button">C: <span></span></button>
+    <button class="choice-button">D: <span></span></button>
+</div>
+*/
+function createQuestionSkeletonElement() {
     let questionElement = document.createElement("div");
     questionElement.classList.add("quiz-question");
 
     let header = document.createElement("h1");
-    header.textContent = question.prompt;
     questionElement.appendChild(header);
 
-    if (question.code) {
-        let code = document.createElement("pre");
-        code.innerHTML = question.code;
-        questionElement.appendChild(code);
-    }
-
-    for (var i = 0; i < question.choices.length; i++) {
+    for (var i = 0; i < QUESTIONSIZE; i++) {
         let choiceButton = document.createElement("button");
         choiceButton.classList.add(CHOICEBUTTONCLASS);
 
-        let choiceText = question.choices[i];
-        if (choiceText === question.answer) {
-            choiceButton.classList.add(CORRECTCLASS);
-        } else {
-            choiceButton.classList.add(INCORRECTCLASS);
-        }
+        let buttonName = "";
         switch (i) {
             case 0:
-                choiceText = "A: " + choiceText;
+                buttonName = "A: ";
                 break;
             case 1:
-                choiceText = "B: " + choiceText;
+                buttonName = "B: ";
                 break;
             case 2:
-                choiceText = "C: " + choiceText;
+                buttonName = "C: ";
                 break;
             case 3:
-                choiceText = "D: " + choiceText;
+                buttonName = "D: ";
                 break;
         }
-        choiceButton.innerText = choiceText;
+        choiceButton.innerText = buttonName;
+        let buttonSpan = document.createElement("span");
+        choiceButton.appendChild(buttonSpan);
+        choiceButton.addEventListener("click", submitQuestion);
+
         questionElement.appendChild(choiceButton);
     }
 
     return questionElement;
+}
+
+function fillQuestionSkeleton(skeleton, question) {
+    let header = skeleton.querySelector("h1");
+    header.textContent = question.prompt;
+    
+    if (question.code) {
+        let snippet = document.createElement("pre");
+        snippet.innerHTML = question.code;
+
+        let header = skeleton.querySelector("h1");
+        header.insertAdjacentElement("afterend", snippet);
+    } else {
+        let snippet = skeleton.querySelector("pre");
+        if (snippet) {
+            snippet.remove();
+        }
+    }
+
+    let buttons = skeleton.querySelectorAll("button");
+
+    for (let i = 0; i < QUESTIONSIZE; i++) {
+        let button = buttons[i];
+        let choice = question.choices[i];
+
+        if (choice === question.answer) {
+            button.dataset.correct = true;
+        } else {
+            button.dataset.correct = "";
+        }
+        button.querySelector("span").innerText = choice;
+    }
+
+    console.debug("Filled question");
+    console.debug(skeleton);
 }
 
 let startButton = document.querySelector("#start-button");
@@ -204,7 +252,7 @@ startButton.addEventListener("click", startQuiz);
 // startButton.addEventListener("click", startQuiz);
 
 let timerTester = document.querySelector("#timer-test");
-console.debug(timerTester);
+// console.debug(timerTester);
 timerTester.addEventListener("click", testTimer);
 
 function someFunctionality() {
