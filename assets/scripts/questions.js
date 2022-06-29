@@ -1,4 +1,4 @@
-const allQuestions = [
+export const allQuestions = [
     {
       "prompt": "Javascript is an _______ language?",
       "choices": [
