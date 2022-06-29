@@ -1,4 +1,4 @@
-import {allQuestions} from './questions.js';
+import { allQuestions } from "./questions.js";
 
 const CORRECTCLASS = "correct-answer";
 const INCORRECTCLASS = "incorrect-answer";
@@ -12,7 +12,7 @@ const INCORRECTPENALTY = 15;
 let highScoreButton = document.querySelector("#highscore-button");
 let timerText = document.querySelector("#timer-time");
 
-let startElement = document.querySelector("#start-screen");
+let startScreenElement = document.querySelector("#start-screen");
 let quizContainerElement = document.querySelector("#quiz-container");
 let resultsElement = document.querySelector("#results-screen");
 let highScorePageElement = document.querySelector("#highscore-screen");
@@ -24,6 +24,63 @@ let score = 0;
 let questionIndexIter;
 
 function init() {
+}
+
+// function createTimer() {
+//     let newTimer = {
+//         timeRemaining: QUIZTIMELENGTH,
+//         timerElement: document.querySelector("#timer-time"),
+//         tick: function() {
+//             this.decrementTimer(1);
+//         },
+//         decrement: function(seconds) {
+//             this.timeRemaining = Math.max(0, this.timeRemaining - 1);
+//         },
+//         start: function() {
+//             this.interval = setInterval(this.tick, 1000);
+//         }
+//     }
+
+//     return newTimer;
+// }
+
+class Timer {
+    constructor(timerLength, timerElement, callback) {
+        this.timeRemaining = timerLength;
+        this.timerElement = timerElement;
+        this.callback = callback;
+        this.interval = null;
+    }
+    
+    decrement(seconds) {
+        this.timeRemaining = Math.max(0, this.timeRemaining - 1);
+        if (this.timeRemaining == 0) {
+            if (this.interval != null) {
+                this.stop();
+            }
+            this.callback();
+        }
+    }
+    
+    tick = () => {
+        console.debug(this);
+        this.decrement(1);
+        this.updateTimerElement();
+    }
+
+    start() {
+        this.updateTimerElement();
+        this.interval = setInterval(this.tick, 1000);
+    }
+
+    stop() {
+        clearInterval(this.interval);
+        this.updateTimerElement();
+    }
+
+    updateTimerElement() {
+        this.timerElement.textContent = this.timeRemaining;
+    }
 }
 
 // Returns an iterator of numbers between [0, possibleChoices) of length max(chosen, possibleChoices)
@@ -46,37 +103,21 @@ function chooseQuestionIndices(chosen, possibleChoices) {
 }
 
 function startQuiz() {
+
     // Setup quiz question indices and remaining time
     questionIndexIter = chooseQuestionIndices(QUIZQUESTIONLENGTH, allQuestions.length);
-    remainingTime = QUIZTIMELENGTH;
 
     // Hide the start screen
-    startElement.style.display = "none";
+    startScreenElement.style.display = "none";
 
     // Initialize the timer
-    updateTimerElement();
-    quizTimer = setInterval(tickTimer, 1000);
+    quizTimer = new Timer(QUIZTIMELENGTH, timerText, endQuiz);
 
     // Create/show the first question
     updateQuestion();
-}
 
-function decrementTimer(seconds) {
-    remainingTime = Math.max(0, remainingTime - 1);
-    updateTimerElement();
-    if (remainingTime <= 0) {
-        clearInterval(quizTimer);
-        endQuiz();
-    }
-    return remainingTime;
-}
-
-function tickTimer() {
-    decrementTimer(1);
-}
-
-function updateTimerElement() {
-    timerText.textContent = remainingTime;
+    // Start timer at the very end to be more generous
+    quizTimer.start();
 }
 
 function submitQuestion(event) {
@@ -89,17 +130,20 @@ function submitQuestion(event) {
         score++;
         updateScoreElement();
     } else {
-        decrementTimer(INCORRECTPENALTY);
+        quizTimer.decrement(INCORRECTPENALTY);
     }
 
     updateQuestion();
-    quizContainerElement.appendChild
+
+    // Append correct/incorrect element
+    quizContainerElement.appendChild();
 }
 
 function updateQuestion() {
     let nextQuestionIndex = questionIndexIter.next();
     if (nextQuestionIndex.done) {
         // No more questions
+        quizTimer.stop();
         endQuiz();
     }
     let newQuestion = createQuestionElement(allQuestions[nextQuestionIndex]);
@@ -107,8 +151,12 @@ function updateQuestion() {
 }
 
 function endQuiz() {
-    // Stop timer
     // Hide/destroy quiz questions
+    quizContainerElement.style.display = "none";
+    // Destroy quiz element
+    quizContainerElement.innerHTML = "";
+
+    // Create/show results screen
 }
 
 function updateScoreElement() {
@@ -164,4 +212,20 @@ function createQuestionElement(question) {
     return questionElement;
 }
 
-init();
+// init();
+// let startButton = startScreenElement.querySelector("button");
+// startButton.addEventListener("click", startQuiz);
+
+let timerTester = document.querySelector("#timer-test");
+timerTester.addEventListener("click", testTimer);
+
+function someFunctionality() {
+    console.debug("Some Functionality");
+}
+
+function testTimer() {
+    console.debug("testTimer");
+    let timerTextElement = document.querySelector("#timer-time");
+    let thisTimer = new Timer(5, timerTextElement, someFunctionality);
+    thisTimer.start();
+}
