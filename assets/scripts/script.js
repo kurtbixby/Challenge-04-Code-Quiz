@@ -1,4 +1,5 @@
 import { allQuestions } from "./questions.js";
+// Look into using require and a .json file
 
 const CORRECTCLASS = "correct-answer";
 const INCORRECTCLASS = "incorrect-answer";
@@ -19,30 +20,8 @@ let highScorePageElement = document.querySelector("#highscore-screen");
 
 let quizTimer;
 
-let remainingTime = 0;
 let score = 0;
 let questionIndexIter;
-
-function init() {
-}
-
-// function createTimer() {
-//     let newTimer = {
-//         timeRemaining: QUIZTIMELENGTH,
-//         timerElement: document.querySelector("#timer-time"),
-//         tick: function() {
-//             this.decrementTimer(1);
-//         },
-//         decrement: function(seconds) {
-//             this.timeRemaining = Math.max(0, this.timeRemaining - 1);
-//         },
-//         start: function() {
-//             this.interval = setInterval(this.tick, 1000);
-//         }
-//     }
-
-//     return newTimer;
-// }
 
 class Timer {
     constructor(timerLength, timerElement, callback) {
@@ -63,7 +42,6 @@ class Timer {
     }
     
     tick = () => {
-        console.debug(this);
         this.decrement(1);
         this.updateTimerElement();
     }
@@ -108,10 +86,14 @@ function startQuiz() {
     questionIndexIter = chooseQuestionIndices(QUIZQUESTIONLENGTH, allQuestions.length);
 
     // Hide the start screen
-    startScreenElement.style.display = "none";
+    startScreenElement.style.visibility = "hidden";
 
     // Initialize the timer
     quizTimer = new Timer(QUIZTIMELENGTH, timerText, endQuiz);
+
+    // Initialize the score
+
+    document.querySelectorAll(".hud-element").forEach(element => element.style.visibility = "visible");
 
     // Create/show the first question
     updateQuestion();
@@ -146,7 +128,7 @@ function updateQuestion() {
         quizTimer.stop();
         endQuiz();
     }
-    let newQuestion = createQuestionElement(allQuestions[nextQuestionIndex]);
+    let newQuestion = createQuestionElement(allQuestions[nextQuestionIndex.value]);
     quizContainerElement.appendChild(newQuestion);
 }
 
@@ -168,17 +150,19 @@ function goToHighScores() {
 }
 
 function createQuestionElement(question) {
+    console.debug("Creating Question");
+    console.debug(question);
     let questionElement = document.createElement("div");
-    question.classList.add("quiz-question");
+    questionElement.classList.add("quiz-question");
 
     let header = document.createElement("h1");
     header.textContent = question.prompt;
-    question.appendChild(header);
+    questionElement.appendChild(header);
 
     if (question.code) {
         let code = document.createElement("pre");
         code.innerHTML = question.code;
-        question.appendChild(code);
+        questionElement.appendChild(code);
     }
 
     for (var i = 0; i < question.choices.length; i++) {
@@ -206,17 +190,21 @@ function createQuestionElement(question) {
                 break;
         }
         choiceButton.innerText = choiceText;
-        question.appendChild(choiceButton);
+        questionElement.appendChild(choiceButton);
     }
 
     return questionElement;
 }
+
+let startButton = document.querySelector("#start-button");
+startButton.addEventListener("click", startQuiz);
 
 // init();
 // let startButton = startScreenElement.querySelector("button");
 // startButton.addEventListener("click", startQuiz);
 
 let timerTester = document.querySelector("#timer-test");
+console.debug(timerTester);
 timerTester.addEventListener("click", testTimer);
 
 function someFunctionality() {
@@ -228,4 +216,26 @@ function testTimer() {
     let timerTextElement = document.querySelector("#timer-time");
     let thisTimer = new Timer(5, timerTextElement, someFunctionality);
     thisTimer.start();
+}
+
+let questionGenerateTester = document.querySelector("#question-generate-test")
+questionGenerateTester.addEventListener("click", testQuestionGeneration);
+
+function testQuestionGeneration() {
+    console.debug("Testing Question Generation");
+    let indices = chooseQuestionIndices(10, allQuestions.length);
+    
+    let result = indices.next();
+    while (!result.done) {
+        console.debug("Index: " + result.value);
+        let question = allQuestions[result.value];
+        console.debug("Question");
+        console.debug(question);
+
+        let createdElement = createQuestionElement(question);
+
+        quizContainerElement.appendChild(createdElement);
+
+        result = indices.next();
+    }
 }
