@@ -3,26 +3,36 @@ import { allQuestions } from "./questions.js";
 
 const CHOICEBUTTONCLASS = "choice-button";
 
-const QUIZTIMELENGTH = 20;
-const QUIZQUESTIONLENGTH = 10;
+// Number of quiz questions and how many options they have
+const QUIZQUESTIONLENGTH = 4;
 const QUESTIONSIZE = 4;
 
+// Number of seconds of the quiz and penalty for an incorrect answer
+const QUIZTIMELENGTH = 200;
 const INCORRECTPENALTY = 15;
 
-let highScoreButton = document.querySelector("#highscore-button");
-let timerText = document.querySelector("#timer-time");
-
-let startScreenElement = document.querySelector("#start-screen");
-let quizContainerElement = document.querySelector("#quiz-container");
-let resultsElement = document.querySelector("#results-screen");
-let highScorePageElement = document.querySelector("#highscore-screen");
+// Points for each correct question and seconds remaining on the clock
+const QUESTIONVALUE = 100;
+const TIMEVALUE = 1;
 
 let quizTimer;
+let score;
 
-let score = 0;
 let questionIndexIter;
 
-let questionSkeleton;
+let highScoreButton = document.querySelector("#highscore-button");
+let quizHUD = document.querySelector("#quiz-hud");
+let timerText = document.querySelector("#timer-time");
+
+let startScreenEl = document.querySelector("#start-screen");
+
+let quizScreenEl = document.querySelector("#quiz-screen");
+let quizQuestionEl = document.querySelector("#quiz-question");
+let questionFooterEl = document.querySelector("#question-footer");
+
+let highScoreScreenEl = document.querySelector("#highscore-screen");
+
+let resultsScreenEl = document.querySelector("#results-screen");
 
 class Timer {
     constructor(timerLength, timerElement, callback) {
@@ -33,7 +43,7 @@ class Timer {
     }
     
     decrement(seconds) {
-        this.timeRemaining = Math.max(0, this.timeRemaining - 1);
+        this.timeRemaining = Math.max(0, this.timeRemaining - seconds);
         this.updateTimerElement();
 
         if (this.timeRemaining == 0) {
@@ -63,6 +73,21 @@ class Timer {
     }
 }
 
+function init() {
+    let startButton = document.querySelector("#start-button");
+    startButton.addEventListener("click", startQuiz);
+
+    highScoreButton.addEventListener("click", showHighScores);
+
+    // Add event listeners to all the buttons
+    let questionButtons = document.getElementsByClassName(CHOICEBUTTONCLASS);
+    for(var i = 0; i < questionButtons.length; i++) {
+        questionButtons[i].addEventListener("click", submitQuestion);
+    }
+
+    score = 0;
+}
+
 // Returns an iterator of numbers between [0, possibleChoices) of length max(chosen, possibleChoices)
 // Chosen is the number of elements to pick, possibleChoices is the total number of elements to pick from
 function chooseQuestionIndices(chosen, possibleChoices) {
@@ -84,21 +109,18 @@ function startQuiz() {
     questionIndexIter = chooseQuestionIndices(QUIZQUESTIONLENGTH, allQuestions.length);
 
     // Hide the start screen
-    startScreenElement.style.display = "hidden";
+    startScreenEl.style.display = "none";
 
     // Initialize the timer
     quizTimer = new Timer(QUIZTIMELENGTH, timerText, endQuiz);
 
     // Initialize the score
 
-
-    document.querySelectorAll(".hud-element").forEach(element => element.style.display = "block");
+    quizHUD.style.display = "block";
 
     // Create/show the first question
-    questionSkeleton = createQuestionSkeletonElement();
-    updateQuestion(questionSkeleton);
-
-    quizContainerElement.appendChild(questionSkeleton);
+    updateQuestion(quizQuestionEl);
+    quizScreenEl.style.display = "block";
 
     // Start timer at the very end to be more generous
     quizTimer.start();
@@ -117,48 +139,70 @@ function updateQuestion(skeleton) {
 
 function submitQuestion(event) {
     let button = event.currentTarget;
-    console.debug("Submit Question");
-    console.debug(button);
 
     if (!button.matches("." + CHOICEBUTTONCLASS)) {
-        console.debug("Doesn't match Class");
         return;
     }
     event.stopPropagation();
 
-    console.debug("Matches Class");
     // Determine correctness
     let correct = button.dataset.correct;
 
     // Update score
     // Update timer
     if (correct) {
-        score++;
+        score += QUESTIONVALUE;
         updateScoreElement();
     } else {
         quizTimer.decrement(INCORRECTPENALTY);
     }
     
-    updateQuestion(questionSkeleton);
+    updateQuestion(quizQuestionEl);
 
-    // Append correct/incorrect element
-    quizContainerElement.appendChild();
+    // Display correct/incorrect
+    let footerString = "";
+    if (correct) {
+        footerString = "Correct!";
+    } else {
+        footerString = "Incorrect!";
+    }
+    
+    // Add timer to remove this
+    questionFooterEl.querySelector("p").textContent = footerString;
+    questionFooterEl.style.display = "block";
+
 }
 
 function endQuiz() {
+    // Score the remaining time
+    score = TIMEVALUE * quizTimer.timeRemaining;
+
     // Hide/destroy quiz questions
-    quizContainerElement.style.display = "none";
-    // Destroy quiz element
-    quizContainerElement.innerHTML = "";
+    quizScreenEl.style.display = "none";
 
     // Create/show results screen
+    resultsScreenEl.style.display = "block";
 }
 
 function updateScoreElement() {
 
 }
 
-function goToHighScores() {
+
+// State machine transition functions
+function showHighScores() {
+    // 
+}
+
+function showStartScreen() {
+
+}
+
+function showResultsScreen() {
+
+}
+
+function showQuiz() {
 
 }
 
@@ -172,42 +216,42 @@ Creates the following HTML skeleton to fill with data
     <button class="choice-button">D: <span></span></button>
 </div>
 */
-function createQuestionSkeletonElement() {
-    let questionElement = document.createElement("div");
-    questionElement.classList.add("quiz-question");
+// function createQuestionSkeletonElement() {
+//     let questionElement = document.createElement("div");
+//     questionElement.classList.add("quiz-question");
 
-    let header = document.createElement("h1");
-    questionElement.appendChild(header);
+//     let header = document.createElement("h1");
+//     questionElement.appendChild(header);
 
-    for (var i = 0; i < QUESTIONSIZE; i++) {
-        let choiceButton = document.createElement("button");
-        choiceButton.classList.add(CHOICEBUTTONCLASS);
+//     for (var i = 0; i < QUESTIONSIZE; i++) {
+//         let choiceButton = document.createElement("button");
+//         choiceButton.classList.add(CHOICEBUTTONCLASS);
 
-        let buttonName = "";
-        switch (i) {
-            case 0:
-                buttonName = "A: ";
-                break;
-            case 1:
-                buttonName = "B: ";
-                break;
-            case 2:
-                buttonName = "C: ";
-                break;
-            case 3:
-                buttonName = "D: ";
-                break;
-        }
-        choiceButton.innerText = buttonName;
-        let buttonSpan = document.createElement("span");
-        choiceButton.appendChild(buttonSpan);
-        choiceButton.addEventListener("click", submitQuestion);
+//         let buttonName = "";
+//         switch (i) {
+//             case 0:
+//                 buttonName = "A: ";
+//                 break;
+//             case 1:
+//                 buttonName = "B: ";
+//                 break;
+//             case 2:
+//                 buttonName = "C: ";
+//                 break;
+//             case 3:
+//                 buttonName = "D: ";
+//                 break;
+//         }
+//         choiceButton.innerText = buttonName;
+//         let buttonSpan = document.createElement("span");
+//         choiceButton.appendChild(buttonSpan);
+//         choiceButton.addEventListener("click", submitQuestion);
 
-        questionElement.appendChild(choiceButton);
-    }
+//         questionElement.appendChild(choiceButton);
+//     }
 
-    return questionElement;
-}
+//     return questionElement;
+// }
 
 function fillQuestionSkeleton(skeleton, question) {
     let header = skeleton.querySelector("h1");
@@ -244,10 +288,7 @@ function fillQuestionSkeleton(skeleton, question) {
     console.debug(skeleton);
 }
 
-let startButton = document.querySelector("#start-button");
-startButton.addEventListener("click", startQuiz);
-
-// init();
+init();
 // let startButton = startScreenElement.querySelector("button");
 // startButton.addEventListener("click", startQuiz);
 

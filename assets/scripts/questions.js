@@ -463,7 +463,8 @@ export const allQuestions = [
       "answer": "false"
     },
     {
-      "prompt": "What happens when we run this code?\n\nfunction dog() {\n   print(\"I am a dog.\");\n}\ndog.sound = \"Bark\";",
+      "prompt": "What happens when we run this code?",
+      "code": "function dog() {\n   print(\"I am a dog.\");\n}\ndog.sound = \"Bark\";",
       "choices": [
         "Syntax Error",
         "“I am a dog” gets printed",

@@ -1,3 +1,27 @@
-.hud-element {
+#debug-buttons {
+    display: none;
+}
+
+#start-screen {
+    display: block;
+}
+
+#quiz-screen {
+    display: none;
+}
+
+#question-footer {
+    display: none;
+}
+
+#highscore-screen {
+    display: none;
+}
+
+#results-screen {
+    display: none;
+}
+
+#quiz-hud {
     display: none;
 }

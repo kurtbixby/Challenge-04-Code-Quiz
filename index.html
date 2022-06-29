@@ -9,8 +9,10 @@
     </head>
     <body>
         <div id="highscore-button">View High Scores</div>
-        <div class="hud-element" id="timer">Timer: <span id="timer-time"></span></div>
-        <div class="hud-element" id="score">Score: <span id="score-text"></span></div>
+        <div id="quiz-hud">
+            <div class="hud-element" id="timer">Timer: <span id="timer-time"></span></div>
+            <div class="hud-element" id="score">Score: <span id="score-text"></span></div>
+        </div>
 
         <div id="container">
             <div id="start-screen">
@@ -19,39 +21,37 @@
                 <button id="start-button">Start Quiz</button>
             </div>
 
-<!--             <div class="quiz-content">
-                <h1></h1>
-                <button></button>
-                <button></button>
-                <button></button>
-                <button></button>
+            <div id="quiz-screen">
+                <div id="quiz-question">
+                    <h1></h1>
+                    <button class="choice-button">A: <span></span></button>
+                    <button class="choice-button">B: <span></span></button>
+                    <button class="choice-button">C: <span></span></button>
+                    <button class="choice-button">D: <span></span></button>
+                </div>
                 <div id="question-footer">
                     <hr>
-                    <p>Wrong/Correct!</p>
+                    <p></p>
                 </div>
             </div>
             
-            <div class="highscore-screen">
-                <button>Go back</button>
-                <button>Clear High scores</button>
+            <div id="highscore-screen">
+                <button id="go-back">Go back</button>
+                <button id="clear-scores">Clear High scores</button>
             </div>
             
-            <div class="results-screen">
+            <div id="results-screen">
                 <h2>All done!</h2>
-                Your final score is
+                Your final score is <span></span><br>
                 Enter initials: form submit
-            </div> -->
+            </div>
 
         </div>
 
-        <button id="timer-test">Test Timer Constructor</button>
-        <button id="question-generate-test">Test Question Choices</button>
-
-        <div id="quiz-container"></div>
-
-        
-
-
+        <div id="debug-buttons">
+            <button id="timer-test">Test Timer Constructor</button>
+            <button id="question-generate-test">Test Question Choices</button>
+        </div>
 
         <script type="module" src="./assets/scripts/script.js"></script>
     </body>
