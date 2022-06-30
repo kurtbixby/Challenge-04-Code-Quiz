@@ -431,3 +431,66 @@ function goBack() {
 }
 
 init();
+
+let debugSection = document.querySelector("#debug-buttons");
+let resultsButton = debugSection.querySelector("#show-results-screen");
+
+resultsButton.addEventListener("click", showResultsScreen);
+
+let timerTester = document.querySelector("#timer-test");
+// console.debug(timerTester);
+timerTester.addEventListener("click", testTimer);
+
+let questionGenerateTester = document.querySelector("#question-generate-test")
+questionGenerateTester.addEventListener("click", testQuestionGeneration);
+
+let scoresButton = debugSection.querySelector("#fill-scores");
+scoresButton.addEventListener("click", fillScores);
+
+function fillScores() {
+    let dummyScores = [
+        { initials: "QWE", score: 752 },
+        { initials: "QWE", score: 742 },
+        { initials: "QWE", score: 740 },
+        { initials: "QWE", score: 738 },
+        { initials: "QWE", score: 553 },
+        { initials: "QWE", score: 542 },
+        { initials: "QWE", score: 521 },
+        { initials: "QWE", score: 342 },
+        { initials: "QWE", score: 121 },
+        { initials: "QWE", score: 12 },
+    ];
+
+    highScores = dummyScores;
+    populateLeaderBoard();
+}
+
+function someFunctionality() {
+    console.debug("Some Functionality");
+}
+
+function testTimer() {
+    console.debug("testTimer");
+    let timerTextElement = document.querySelector("#timer-time");
+    let thisTimer = new Timer(5, timerTextElement, someFunctionality);
+    thisTimer.start();
+}
+
+function testQuestionGeneration() {
+    console.debug("Testing Question Generation");
+    let indices = chooseQuestionIndices(10, allQuestions.length);
+    
+    let result = indices.next();
+    while (!result.done) {
+        console.debug("Index: " + result.value);
+        let question = allQuestions[result.value];
+        console.debug("Question");
+        console.debug(question);
+
+        let createdElement = createQuestionElement(question);
+
+        quizContainerElement.appendChild(createdElement);
+
+        result = indices.next();
+    }
+}

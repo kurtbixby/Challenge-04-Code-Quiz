@@ -1,5 +1,79 @@
-#start-screen {
+:root {
+    --color-1: #242F9B;
+    --color-2: #646FD4;
+    --color-3: #9BA3EB;
+    --color-4: #DBDFFD;
+
+    --max-width: 1000px;
+}
+
+#debug-buttons {
     display: block;
+}
+
+#header-flex {
+    display: flex;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    justify-content: center;
+    z-index: 1;
+}
+
+#header-bar {
+    flex-basis: 60%;
+    background-color: var(--color-1);
+    border-bottom-left-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+    box-shadow: 0px 0px 5px 2px;
+}
+
+.hud-element {
+    color: var(--color-4);
+    font-size: large;
+    font-weight: bold;
+    margin: .5rem;
+}
+
+#main-flexbox {
+    margin-top: 3rem;
+    display: flex;
+    justify-content: center;
+}
+
+main {
+    flex-basis: 55%;
+}
+
+#start-screen {
+    display: flex;
+    flex-flow: column;
+    flex-wrap: wrap;
+    align-items: center;
+    text-align: center;
+}
+
+#start-screen #description {
+    margin: .4rem;
+}
+
+#start-screen p {
+    margin: .2rem;
+}
+
+#start-screen button {
+    margin-bottom: .8rem;
+    font-size: large;
+}
+
+.section-screen h1 {
+    font-size: 1.7rem;
+    font-weight: bold;
+    margin: .4rem;
+}
+
+#start-button {
+    max-width: 30%;
 }
 
 #quiz-screen {
@@ -21,3 +95,4 @@
 #quiz-hud {
     display: none;
 }
+
