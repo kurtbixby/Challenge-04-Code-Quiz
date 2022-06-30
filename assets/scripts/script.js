@@ -1,5 +1,4 @@
 import { allQuestions } from "./questions.js";
-// Look into using require and a .json file
 
 const CHOICEBUTTONCLASS = "choice-button";
 const SCOREBOARDELCLASS = "scoreboard-entry";
@@ -21,9 +20,11 @@ const TIMEVALUE = 1;
 const SCORESKEY = "scores";
 
 let highScores = [];
-let quizTimer;
-let finalScore;
+
 let questionsCorrect;
+let finalScore;
+let quizTimer;
+let footerTimeout;
 
 let questionIndexIter;
 
@@ -202,16 +203,21 @@ function submitQuestion(event) {
         footerString = "Incorrect!";
     }
     
+    clearTimeout(footerTimeout);
     // Add timer to remove this
     questionFooterEl.querySelector("p").textContent = footerString;
     questionFooterEl.style.display = "block";
-
+    footerTimeout = setTimeout(() => {
+        questionFooterEl.style.display = "none";
+    }, 1200);
 }
 
 function endQuiz() {
     // Score the remaining time
     finalScore = calculateScore();
     updateScoreElement();
+
+    hideHUD();
     
     // Populate Results Score Card
     populateScoreCard();
@@ -234,8 +240,11 @@ function fillQuestionSkeleton(skeleton, question) {
     header.textContent = question.prompt;
     
     if (question.code) {
-        let snippet = document.createElement("pre");
-        snippet.innerHTML = question.code;
+        let snippet = skeleton.querySelector("pre");
+        if (snippet === null) {
+            snippet = document.createElement("pre");
+        }
+        snippet.innerText = question.code;
 
         let header = skeleton.querySelector("h1");
         header.insertAdjacentElement("afterend", snippet);
@@ -316,8 +325,6 @@ function saveScore(event) {
     initialsField.value = "";
     finalScore = 0;
     updateScoreElement();
-
-    hideHUD();
 
     endResults();
 }
