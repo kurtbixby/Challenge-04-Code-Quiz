@@ -7,11 +7,11 @@ const INITIALSCLASS = "scoreboard-initials";
 const SCORECLASS = "scoreboard-score";
 
 // Number of quiz questions and how many options they have
-const QUIZQUESTIONLENGTH = 4;
+const QUIZQUESTIONLENGTH = 20;
 const QUESTIONSIZE = 4;
 
 // Number of seconds of the quiz and penalty for an incorrect answer
-const QUIZTIMELENGTH = 200;
+const QUIZTIMELENGTH = 120;
 const INCORRECTPENALTY = 15;
 
 // Points for each correct question and seconds remaining on the clock
@@ -22,7 +22,8 @@ const SCORESKEY = "scores";
 
 let highScores = [];
 let quizTimer;
-let score;
+let finalScore;
+let questionsCorrect;
 
 let questionIndexIter;
 
@@ -44,7 +45,9 @@ let highScoreScreenEl = document.getElementById("highscore-screen");
 let scoreboardEl = highScoreScreenEl.querySelector("#scoreboard");
 
 let resultsScreenEl = document.getElementById("results-screen");
-let finalScoreEl = resultsScreenEl.querySelector("span");
+let questionScoreEl = resultsScreenEl.querySelector("#questions-score");
+let timerScoreEl = resultsScreenEl.querySelector("#timer-score");
+let totalScoreEl = resultsScreenEl.querySelector("#total-score");
 
 class Timer {
     constructor(timerLength, timerElement, callback) {
@@ -88,38 +91,35 @@ class Timer {
 function init() {
 
     // Init Data
+    loadScores();
 
     // Init Start Screen
-    // Init Quiz Screen
-    // Init High Score Screen
-    // Init Results Screen
-
     // Start Screen Buttons
     let startButton = startScreenEl.querySelector("#start-button");
     startButton.addEventListener("click", startQuiz);
 
+    // Init Quiz Screen
     // Add event listeners to all the quiz buttons
     let questionButtons = quizScreenEl.getElementsByClassName(CHOICEBUTTONCLASS);
     for(var i = 0; i < questionButtons.length; i++) {
         questionButtons[i].addEventListener("click", submitQuestion);
     }
 
+    // Init High Score Screen
     // High Score Screen Buttons
     highScoreButton.addEventListener("click", showHighScores);
     let backButton = highScoreScreenEl.querySelector("#go-back");
     backButton.addEventListener("click", goBack);
     let clearButton = highScoreScreenEl.querySelector("#clear-scores");
     clearButton.addEventListener("click", clearScores);
+    populateLeaderBoard();
 
+    // Init Results Screen
     let initialsField = resultsScreenEl.querySelector("input")
     initialsField.value = "";
     let saveScoreButton = resultsScreenEl.querySelector("button");
     saveScoreButton.addEventListener("click", saveScore);
 
-    loadScores();
-    populateLeaderBoard();
-
-    score = 0;
     activeElement = startScreenEl;
 }
 
@@ -147,7 +147,9 @@ function startQuiz() {
     quizTimer = new Timer(QUIZTIMELENGTH, timerText, endQuiz);
 
     // Initialize the score
+    questionsCorrect = 0;
     updateScoreElement();
+
     showHUD();
 
     // Fill first question
@@ -184,7 +186,7 @@ function submitQuestion(event) {
     // Update score
     // Update timer
     if (correct) {
-        score += QUESTIONVALUE;
+        questionsCorrect++;
         updateScoreElement();
     } else {
         quizTimer.decrement(INCORRECTPENALTY);
@@ -208,17 +210,23 @@ function submitQuestion(event) {
 
 function endQuiz() {
     // Score the remaining time
-    score += TIMEVALUE * quizTimer.timeRemaining;
+    finalScore = calculateScore();
     updateScoreElement();
     
     // Populate Results Score Card
-    
+    populateScoreCard();
+
     showResultsScreen();
 }
 
+function calculateScore() {
+    let questionSubscore = questionsCorrect * QUESTIONVALUE;
+    let timerSubscore = quizTimer.timeRemaining * TIMEVALUE;
+    return questionSubscore + timerSubscore;
+}
+
 function updateScoreElement() {
-    scoreText.textContent = score;
-    finalScoreEl.textContent = score;
+    scoreText.textContent = questionsCorrect;
 }
 
 function fillQuestionSkeleton(skeleton, question) {
@@ -279,19 +287,34 @@ function createLeaderboardElement(scoreEntry) {
     return scoreElement;
 }
 
+function populateScoreCard() {
+    let questionSubscore = questionsCorrect * QUESTIONVALUE;
+    let timerSubscore = quizTimer.timeRemaining * TIMEVALUE;
+    let totalScore = questionSubscore + timerSubscore;
+
+    let questionScoreText = `${questionsCorrect} correct questions X ${QUESTIONVALUE} points = ${questionSubscore}`;
+    questionScoreEl.textContent = questionScoreText;
+    
+    let timerScoreText = `${quizTimer.timeRemaining} seconds remaining X ${TIMEVALUE} points = ${timerSubscore}`;
+    timerScoreEl.textContent = timerScoreText;
+    
+    let totalScoreText = `Your final score is ${totalScore}`;
+    totalScoreEl.textContent = totalScoreText;
+}
+
 function saveScore(event) {
     event.preventDefault();
 
     let initialsField = resultsScreenEl.querySelector("input");
 
-    let scoreEntry = {initials: initialsField.value, score: score};
+    let scoreEntry = {initials: initialsField.value, score: finalScore};
 
     addScore(scoreEntry);
     writeScores(highScores);
     populateLeaderBoard();
 
     initialsField.value = "";
-    score = 0;
+    finalScore = 0;
     updateScoreElement();
 
     hideHUD();
@@ -319,8 +342,6 @@ function addScore(scoreEntry) {
     }
     
     highScores = highScores.slice(0, 10);
-
-    // Populate high scores screen
 }
 
 function clearScores() {

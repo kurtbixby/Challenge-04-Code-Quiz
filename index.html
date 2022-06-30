@@ -11,7 +11,7 @@
         <div id="highscore-button">View High Scores</div>
         <div id="quiz-hud">
             <div class="hud-element" id="timer">Timer: <span id="timer-text"></span></div>
-            <div class="hud-element" id="score">Score: <span id="score-text"></span></div>
+            <div class="hud-element" id="score">Questions Correct: <span id="score-text"></span></div>
         </div>
 
         <div id="container">
@@ -43,7 +43,11 @@
             
             <div id="results-screen">
                 <h2>All done!</h2>
-                Your final score is <span></span><br>
+                <div id="score-card">
+                    <p id="questions-score"></p>
+                    <p id="timer-score"></p>
+                    <p id="total-score"></p>
+                </div>
                 <form>
                     <input oninput="this.value = this.value.toUpperCase()" type="text" maxlength="3" placeholder="Enter your initials" />
                     <button>Save Score</button>
