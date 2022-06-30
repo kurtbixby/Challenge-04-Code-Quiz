@@ -22,7 +22,11 @@ let questionIndexIter;
 
 let highScoreButton = document.querySelector("#highscore-button");
 let quizHUD = document.querySelector("#quiz-hud");
-let timerText = document.querySelector("#timer-time");
+let timerText = document.querySelector("#timer-text");
+// let scoreText = document.getElementById("score-text");
+
+let activeElement;
+let previousElement;
 
 let startScreenEl = document.querySelector("#start-screen");
 
@@ -74,18 +78,28 @@ class Timer {
 }
 
 function init() {
-    let startButton = document.querySelector("#start-button");
+    // Start Screen Buttons
+    let startButton = startScreenEl.querySelector("#start-button");
     startButton.addEventListener("click", startQuiz);
 
-    highScoreButton.addEventListener("click", showHighScores);
-
-    // Add event listeners to all the buttons
-    let questionButtons = document.getElementsByClassName(CHOICEBUTTONCLASS);
+    // Add event listeners to all the quiz buttons
+    let questionButtons = quizScreenEl.getElementsByClassName(CHOICEBUTTONCLASS);
     for(var i = 0; i < questionButtons.length; i++) {
         questionButtons[i].addEventListener("click", submitQuestion);
     }
 
+    // High Score Screen Buttons
+    highScoreButton.addEventListener("click", showHighScores);
+    let backButton = highScoreScreenEl.querySelector("#go-back");
+    backButton.addEventListener("click", goBack);
+    let clearButton = highScoreScreenEl.querySelector("#clear-scores");
+    clearButton.addEventListener("click", clearScores);
+
+    let saveScoreButton = resultsScreenEl.querySelector("button");
+    saveScoreButton.addEventListener("click", saveScore);
+
     score = 0;
+    activeElement = startScreenEl;
 }
 
 // Returns an iterator of numbers between [0, possibleChoices) of length max(chosen, possibleChoices)
@@ -108,9 +122,6 @@ function startQuiz() {
     // Setup quiz question indices and remaining time
     questionIndexIter = chooseQuestionIndices(QUIZQUESTIONLENGTH, allQuestions.length);
 
-    // Hide the start screen
-    startScreenEl.style.display = "none";
-
     // Initialize the timer
     quizTimer = new Timer(QUIZTIMELENGTH, timerText, endQuiz);
 
@@ -118,12 +129,13 @@ function startQuiz() {
 
     quizHUD.style.display = "block";
 
-    // Create/show the first question
+    // Fill first question
     updateQuestion(quizQuestionEl);
-    quizScreenEl.style.display = "block";
 
+    showQuiz();
     // Start timer at the very end to be more generous
     quizTimer.start();
+
 }
 
 function updateQuestion(skeleton) {
@@ -176,33 +188,11 @@ function submitQuestion(event) {
 function endQuiz() {
     // Score the remaining time
     score = TIMEVALUE * quizTimer.timeRemaining;
-
-    // Hide/destroy quiz questions
-    quizScreenEl.style.display = "none";
-
-    // Create/show results screen
-    resultsScreenEl.style.display = "block";
+    
+    showResultsScreen();
 }
 
 function updateScoreElement() {
-
-}
-
-
-// State machine transition functions
-function showHighScores() {
-    // 
-}
-
-function showStartScreen() {
-
-}
-
-function showResultsScreen() {
-
-}
-
-function showQuiz() {
 
 }
 
@@ -283,14 +273,68 @@ function fillQuestionSkeleton(skeleton, question) {
         }
         button.querySelector("span").innerText = choice;
     }
+}
 
-    console.debug("Filled question");
-    console.debug(skeleton);
+function saveScore(event) {
+    event.preventDefault();
+
+    let initialsField = resultsScreenEl.querySelector("input");
+    let initials = initialsField.value;
+    let retrievedScore = 0;
+
+    console.debug("saving score: " + retrievedScore);
+    initialsField.value = "";
+    endResults();
+}
+
+function clearScores() {
+
+}
+
+function endResults() {
+    activeElement.style.display = "none";
+    activeElement = startScreenEl;
+    showHighScores();
+}
+
+// State machine transition functions
+function showQuiz() {
+    transitionScreen(quizScreenEl);
+}
+
+function showHighScores() {
+    transitionScreen(highScoreScreenEl);
+}
+
+function showResultsScreen() {
+    transitionScreen(resultsScreenEl);
+}
+
+function showStartScreen() {
+    transitionScreen(startScreenEl);
+}
+
+function transitionScreen(dst) {
+    activeElement.style.display = "none";
+    previousElement = activeElement;
+    activeElement = dst;
+    activeElement.style.display = "block";
+}
+
+function goBack() {
+    activeElement.style.display = "none";
+    let temp = activeElement;
+    activeElement = previousElement;
+    previousElement = temp;
+    activeElement.style.display = "block";
 }
 
 init();
-// let startButton = startScreenElement.querySelector("button");
-// startButton.addEventListener("click", startQuiz);
+
+let debugSection = document.querySelector("#debug-buttons");
+let resultsButton = debugSection.querySelector("#show-results-screen");
+
+resultsButton.addEventListener("click", showResultsScreen);
 
 let timerTester = document.querySelector("#timer-test");
 // console.debug(timerTester);

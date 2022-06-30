@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>Password Generator</title>
+        <title>JavaScript Quiz</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
         <link rel="stylesheet" href="./assets/styles/style.css" />
@@ -10,7 +10,7 @@
     <body>
         <div id="highscore-button">View High Scores</div>
         <div id="quiz-hud">
-            <div class="hud-element" id="timer">Timer: <span id="timer-time"></span></div>
+            <div class="hud-element" id="timer">Timer: <span id="timer-text"></span></div>
             <div class="hud-element" id="score">Score: <span id="score-text"></span></div>
         </div>
 
@@ -36,14 +36,18 @@
             </div>
             
             <div id="highscore-screen">
-                <button id="go-back">Go back</button>
+                <div id="scoreboard"></div>
+                <button id="go-back">Close High Scores</button>
                 <button id="clear-scores">Clear High scores</button>
             </div>
             
             <div id="results-screen">
                 <h2>All done!</h2>
                 Your final score is <span></span><br>
-                Enter initials: form submit
+                <form>
+                    <input oninput="this.value = this.value.toUpperCase()" type="text" maxlength="3" placeholder="Enter your initials" />
+                    <button>Save Score</button>
+                </form>
             </div>
 
         </div>
@@ -51,6 +55,7 @@
         <div id="debug-buttons">
             <button id="timer-test">Test Timer Constructor</button>
             <button id="question-generate-test">Test Question Choices</button>
+            <button id="show-results-screen">Go To Results Screen</button>
         </div>
 
         <script type="module" src="./assets/scripts/script.js"></script>
