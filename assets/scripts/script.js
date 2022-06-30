@@ -2,6 +2,9 @@ import { allQuestions } from "./questions.js";
 // Look into using require and a .json file
 
 const CHOICEBUTTONCLASS = "choice-button";
+const SCOREBOARDELCLASS = "scoreboard-entry";
+const INITIALSCLASS = "scoreboard-initials";
+const SCORECLASS = "scoreboard-score";
 
 // Number of quiz questions and how many options they have
 const QUIZQUESTIONLENGTH = 4;
@@ -15,6 +18,9 @@ const INCORRECTPENALTY = 15;
 const QUESTIONVALUE = 100;
 const TIMEVALUE = 1;
 
+const SCORESKEY = "scores";
+
+let highScores = [];
 let quizTimer;
 let score;
 
@@ -35,8 +41,10 @@ let quizQuestionEl = quizScreenEl.querySelector("#quiz-question");
 let questionFooterEl = quizScreenEl.querySelector("#question-footer");
 
 let highScoreScreenEl = document.getElementById("highscore-screen");
+let scoreboardEl = highScoreScreenEl.querySelector("#scoreboard");
 
 let resultsScreenEl = document.getElementById("results-screen");
+let finalScoreEl = resultsScreenEl.querySelector("span");
 
 class Timer {
     constructor(timerLength, timerElement, callback) {
@@ -78,6 +86,14 @@ class Timer {
 }
 
 function init() {
+
+    // Init Data
+
+    // Init Start Screen
+    // Init Quiz Screen
+    // Init High Score Screen
+    // Init Results Screen
+
     // Start Screen Buttons
     let startButton = startScreenEl.querySelector("#start-button");
     startButton.addEventListener("click", startQuiz);
@@ -95,8 +111,13 @@ function init() {
     let clearButton = highScoreScreenEl.querySelector("#clear-scores");
     clearButton.addEventListener("click", clearScores);
 
+    let initialsField = resultsScreenEl.querySelector("input")
+    initialsField.value = "";
     let saveScoreButton = resultsScreenEl.querySelector("button");
     saveScoreButton.addEventListener("click", saveScore);
+
+    loadScores();
+    populateLeaderBoard();
 
     score = 0;
     activeElement = startScreenEl;
@@ -126,10 +147,11 @@ function startQuiz() {
     quizTimer = new Timer(QUIZTIMELENGTH, timerText, endQuiz);
 
     // Initialize the score
+    updateScoreElement();
     showHUD();
 
     // Fill first question
-    updateQuestion(quizQuestionEl);
+    nextQuestion(quizQuestionEl);
 
     showQuiz();
     // Start timer at the very end to be more generous
@@ -137,7 +159,7 @@ function startQuiz() {
 
 }
 
-function updateQuestion(skeleton) {
+function nextQuestion(skeleton) {
     let nextQuestionIndex = questionIndexIter.next();
     if (nextQuestionIndex.done) {
         // No more questions
@@ -168,7 +190,7 @@ function submitQuestion(event) {
         quizTimer.decrement(INCORRECTPENALTY);
     }
     
-    updateQuestion(quizQuestionEl);
+    nextQuestion(quizQuestionEl);
 
     // Display correct/incorrect
     let footerString = "";
@@ -186,61 +208,18 @@ function submitQuestion(event) {
 
 function endQuiz() {
     // Score the remaining time
-    score = TIMEVALUE * quizTimer.timeRemaining;
+    score += TIMEVALUE * quizTimer.timeRemaining;
+    updateScoreElement();
+    
+    // Populate Results Score Card
     
     showResultsScreen();
 }
 
 function updateScoreElement() {
-
+    scoreText.textContent = score;
+    finalScoreEl.textContent = score;
 }
-
-/* 
-Creates the following HTML skeleton to fill with data
-<div class="quiz-question">
-    <h1></h1>
-    <button class="choice-button">A: <span></span></button>
-    <button class="choice-button">B: <span></span></button>
-    <button class="choice-button">C: <span></span></button>
-    <button class="choice-button">D: <span></span></button>
-</div>
-*/
-// function createQuestionSkeletonElement() {
-//     let questionElement = document.createElement("div");
-//     questionElement.classList.add("quiz-question");
-
-//     let header = document.createElement("h1");
-//     questionElement.appendChild(header);
-
-//     for (var i = 0; i < QUESTIONSIZE; i++) {
-//         let choiceButton = document.createElement("button");
-//         choiceButton.classList.add(CHOICEBUTTONCLASS);
-
-//         let buttonName = "";
-//         switch (i) {
-//             case 0:
-//                 buttonName = "A: ";
-//                 break;
-//             case 1:
-//                 buttonName = "B: ";
-//                 break;
-//             case 2:
-//                 buttonName = "C: ";
-//                 break;
-//             case 3:
-//                 buttonName = "D: ";
-//                 break;
-//         }
-//         choiceButton.innerText = buttonName;
-//         let buttonSpan = document.createElement("span");
-//         choiceButton.appendChild(buttonSpan);
-//         choiceButton.addEventListener("click", submitQuestion);
-
-//         questionElement.appendChild(choiceButton);
-//     }
-
-//     return questionElement;
-// }
 
 function fillQuestionSkeleton(skeleton, question) {
     let header = skeleton.querySelector("h1");
@@ -274,20 +253,100 @@ function fillQuestionSkeleton(skeleton, question) {
     }
 }
 
+function populateLeaderBoard() {
+    scoreboardEl.innerHTML = "";
+    highScores.forEach(score => {
+        let scoreElement = createLeaderboardElement(score);
+        scoreboardEl.appendChild(scoreElement);
+    });
+}
+
+function createLeaderboardElement(scoreEntry) {
+    let scoreElement = document.createElement("div");
+    scoreElement.classList.add(SCOREBOARDELCLASS);
+
+    let initials = document.createElement("p");
+    initials.classList.add(INITIALSCLASS);
+    initials.textContent = scoreEntry.initials;
+
+    let score = document.createElement("p");
+    score.classList.add(SCORECLASS);
+    score.textContent = scoreEntry.score;
+
+    scoreElement.appendChild(initials);
+    scoreElement.appendChild(score);
+
+    return scoreElement;
+}
+
 function saveScore(event) {
     event.preventDefault();
 
     let initialsField = resultsScreenEl.querySelector("input");
-    let initials = initialsField.value;
-    let retrievedScore = 0;
 
-    console.debug("saving score: " + retrievedScore);
+    let scoreEntry = {initials: initialsField.value, score: score};
+
+    addScore(scoreEntry);
+    writeScores(highScores);
+    populateLeaderBoard();
+
     initialsField.value = "";
+    score = 0;
+    updateScoreElement();
+
+    hideHUD();
+
     endResults();
 }
 
-function clearScores() {
+function addScore(scoreEntry) {
+    console.debug(highScores);
+    if (highScores.length < 1) {
+        highScores.push(scoreEntry);
+    }
+    else {
+        var inserted = false;
+        for (var i = 0; i < highScores.length; i++) {
+            if (scoreEntry.score > highScores[i].score) {
+                highScores.splice(i, 0, scoreEntry);
+                inserted = true;
+                break;
+            }
+        }
+        if (!inserted) {
+            highScores.push(scoreEntry);
+        }
+    }
+    
+    highScores = highScores.slice(0, 10);
 
+    // Populate high scores screen
+}
+
+function clearScores() {
+    highScores = [];
+    writeScores(highScores);
+    populateLeaderBoard();
+}
+
+function loadScores() {
+    let retrievedScores = localStorage.getItem(SCORESKEY);
+    console.debug("retrievedScores: " + retrievedScores);
+    if (retrievedScores === null) {
+        writeScores([]);
+    } else {
+        try {
+            highScores = JSON.parse(retrievedScores);
+        } catch (error) {
+            console.error("Bad stored JSON. Resetting high scores.");
+            clearScores();
+        }
+    }
+    console.debug(highScores);
+}
+
+function writeScores(scores) {
+    localStorage.setItem(SCORESKEY, JSON.stringify(scores));
 }
 
 function endResults() {
@@ -300,7 +359,11 @@ function showHUD() {
     quizHUD.style.display = "block";
 }
 
-// State machine transition functions
+function hideHUD() {
+    quizHUD.style.display = "none";
+}
+
+// State machine/screen transition functions
 function showQuiz() {
     transitionScreen(quizScreenEl);
 }
@@ -317,13 +380,20 @@ function showStartScreen() {
     transitionScreen(startScreenEl);
 }
 
+// Hide current screen, show dst screen
 function transitionScreen(dst) {
+    if (activeElement === dst) {
+        return;
+    }
+
     activeElement.style.display = "none";
     previousElement = activeElement;
     activeElement = dst;
     activeElement.style.display = "block";
 }
 
+// Go to the previous screen
+// Undo of transitionScreen
 function goBack() {
     activeElement.style.display = "none";
     let temp = activeElement;
@@ -343,6 +413,30 @@ let timerTester = document.querySelector("#timer-test");
 // console.debug(timerTester);
 timerTester.addEventListener("click", testTimer);
 
+let questionGenerateTester = document.querySelector("#question-generate-test")
+questionGenerateTester.addEventListener("click", testQuestionGeneration);
+
+let scoresButton = debugSection.querySelector("#fill-scores");
+scoresButton.addEventListener("click", fillScores);
+
+function fillScores() {
+    let dummyScores = [
+        { initials: "QWE", score: 752 },
+        { initials: "QWE", score: 742 },
+        { initials: "QWE", score: 740 },
+        { initials: "QWE", score: 738 },
+        { initials: "QWE", score: 553 },
+        { initials: "QWE", score: 542 },
+        { initials: "QWE", score: 521 },
+        { initials: "QWE", score: 342 },
+        { initials: "QWE", score: 121 },
+        { initials: "QWE", score: 12 },
+    ];
+
+    highScores = dummyScores;
+    populateLeaderBoard();
+}
+
 function someFunctionality() {
     console.debug("Some Functionality");
 }
@@ -353,9 +447,6 @@ function testTimer() {
     let thisTimer = new Timer(5, timerTextElement, someFunctionality);
     thisTimer.start();
 }
-
-let questionGenerateTester = document.querySelector("#question-generate-test")
-questionGenerateTester.addEventListener("click", testQuestionGeneration);
 
 function testQuestionGeneration() {
     console.debug("Testing Question Generation");
