@@ -12,6 +12,7 @@ const QUESTIONSIZE = 4;
 // Number of seconds of the quiz and penalty for an incorrect answer
 const QUIZTIMELENGTH = 1200;
 const INCORRECTPENALTY = 15;
+const FOOTERTIME = 60000;
 
 // Points for each correct question and seconds remaining on the clock
 const QUESTIONVALUE = 100;
@@ -206,10 +207,10 @@ function submitQuestion(event) {
     clearTimeout(footerTimeout);
     // Add timer to remove this
     questionFooterEl.querySelector("p").textContent = footerString;
-    questionFooterEl.style.display = "block";
+    questionFooterEl.style.display = "flex";
     footerTimeout = setTimeout(() => {
         questionFooterEl.style.display = "none";
-    }, 1200);
+    }, FOOTERTIME);
 }
 
 function endQuiz() {
@@ -433,9 +434,6 @@ function goBack() {
 init();
 
 let debugSection = document.querySelector("#debug-section");
-let resultsButton = debugSection.querySelector("#show-results-screen");
-
-resultsButton.addEventListener("click", showResultsScreen);
 
 let timerTester = document.querySelector("#timer-test");
 timerTester.addEventListener("click", testTimer);
@@ -445,6 +443,12 @@ questionGenerateTester.addEventListener("click", testQuestionGeneration);
 
 let scoresButton = debugSection.querySelector("#fill-scores");
 scoresButton.addEventListener("click", fillScores);
+
+let resultsButton = debugSection.querySelector("#show-results-screen");
+resultsButton.addEventListener("click", showResultsScreen);
+
+let quizButton = debugSection.querySelector("#show-quiz");
+quizButton.addEventListener("click", jumpToQuiz);
 
 function fillScores() {
     let dummyScores = [
@@ -492,4 +496,10 @@ function testQuestionGeneration() {
 
         result = indices.next();
     }
+}
+
+function jumpToQuiz() {
+    fillQuestionSkeleton(quizQuestionEl, allQuestions[6]);
+    showHUD();
+    showQuiz();
 }
