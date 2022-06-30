@@ -20,23 +20,23 @@ let score;
 
 let questionIndexIter;
 
-let highScoreButton = document.querySelector("#highscore-button");
-let quizHUD = document.querySelector("#quiz-hud");
-let timerText = document.querySelector("#timer-text");
-// let scoreText = document.getElementById("score-text");
+let highScoreButton = document.getElementById("highscore-button");
+let quizHUD = document.getElementById("quiz-hud");
+let timerText = document.getElementById("timer-text");
+let scoreText = document.getElementById("score-text");
 
 let activeElement;
 let previousElement;
 
-let startScreenEl = document.querySelector("#start-screen");
+let startScreenEl = document.getElementById("start-screen");
 
-let quizScreenEl = document.querySelector("#quiz-screen");
-let quizQuestionEl = document.querySelector("#quiz-question");
-let questionFooterEl = document.querySelector("#question-footer");
+let quizScreenEl = document.getElementById("quiz-screen");
+let quizQuestionEl = quizScreenEl.querySelector("#quiz-question");
+let questionFooterEl = quizScreenEl.querySelector("#question-footer");
 
-let highScoreScreenEl = document.querySelector("#highscore-screen");
+let highScoreScreenEl = document.getElementById("highscore-screen");
 
-let resultsScreenEl = document.querySelector("#results-screen");
+let resultsScreenEl = document.getElementById("results-screen");
 
 class Timer {
     constructor(timerLength, timerElement, callback) {
@@ -126,8 +126,7 @@ function startQuiz() {
     quizTimer = new Timer(QUIZTIMELENGTH, timerText, endQuiz);
 
     // Initialize the score
-
-    quizHUD.style.display = "block";
+    showHUD();
 
     // Fill first question
     updateQuestion(quizQuestionEl);
@@ -295,6 +294,10 @@ function endResults() {
     activeElement.style.display = "none";
     activeElement = startScreenEl;
     showHighScores();
+}
+
+function showHUD() {
+    quizHUD.style.display = "block";
 }
 
 // State machine transition functions
