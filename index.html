@@ -38,10 +38,12 @@
                 <div class="section-screen" id="quiz-screen">
                     <div id="quiz-question">
                         <h1></h1>
-                        <button class="choice-button">A: <span></span></button>
-                        <button class="choice-button">B: <span></span></button>
-                        <button class="choice-button">C: <span></span></button>
-                        <button class="choice-button">D: <span></span></button>
+                        <div id="choice-buttons">
+                            <button class="choice-button">A: <span></span></button>
+                            <button class="choice-button">B: <span></span></button>
+                            <button class="choice-button">C: <span></span></button>
+                            <button class="choice-button">D: <span></span></button>
+                        </div>
                     </div>
                     <div id="question-footer">
                         <hr>
@@ -52,8 +54,10 @@
                 <div class="section-screen" id="highscore-screen">
                     <h1>High Scores</h1>
                     <div id="scoreboard"></div>
-                    <button id="go-back">Close High Scores</button>
-                    <button id="clear-scores">Clear High scores</button>
+                    <div>
+                        <button id="go-back">Close High Scores</button>
+                        <button id="clear-scores">Clear High scores</button>
+                    </div>
                 </div>
                 
                 <div class="section-screen" id="results-screen">
@@ -70,15 +74,17 @@
                 </div>
                 
                 <hr>
-                <div id="debug-buttons-logic">
-                    <button id="timer-test">Test Timer Constructor</button>
-                    <button id="question-generate-test">Test Question Choices</button>
-                    <button id="fill-scores">Fill Scores</button>
-                </div>
-                
-                <div id="debug-buttons-styling">
-                    <button id="show-results-screen">Go To Results Screen</button>
-                    <button id="show-quiz">Go To Quiz Screen</button>
+                <div id="debug-section">
+                    <div id="debug-buttons-logic">
+                        <button id="timer-test">Test Timer Constructor</button>
+                        <button id="question-generate-test">Test Question Choices</button>
+                        <button id="fill-scores">Fill Scores</button>
+                    </div>
+                    
+                    <div id="debug-buttons-styling">
+                        <button id="show-results-screen">Go To Results Screen</button>
+                        <button id="show-quiz">Go To Quiz Screen</button>
+                    </div>
                 </div>
 
             </main>

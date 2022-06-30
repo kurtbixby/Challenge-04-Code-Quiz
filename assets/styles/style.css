@@ -21,11 +21,21 @@
 }
 
 #header-bar {
+    display: flex;
+    justify-content: space-between;
+
     flex-basis: 60%;
     background-color: var(--color-1);
     border-bottom-left-radius: 1rem;
     border-bottom-right-radius: 1rem;
     box-shadow: 0px 0px 5px 2px;
+}
+
+#highscore-button {
+}
+
+#quiz-hud {
+    display: flex;
 }
 
 .hud-element {
@@ -45,7 +55,7 @@ main {
     flex-basis: 55%;
 }
 
-#start-screen {
+.section-screen {
     display: flex;
     flex-flow: column;
     flex-wrap: wrap;
@@ -78,6 +88,25 @@ main {
 
 #quiz-screen {
     display: none;
+}
+
+#quiz-question {
+    display: flex;
+    justify-content: center;
+    flex-flow: column;
+}
+
+#quiz-question h1 {
+    text-align: left;
+}
+
+pre {
+    font-family: monospace;
+    text-align: left;
+    background-color: var(--color-4);
+    border-radius: 1rem;
+    padding: 1rem;
+    flex-basis: 80%;
 }
 
 #question-footer {

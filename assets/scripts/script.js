@@ -6,11 +6,11 @@ const INITIALSCLASS = "scoreboard-initials";
 const SCORECLASS = "scoreboard-score";
 
 // Number of quiz questions and how many options they have
-const QUIZQUESTIONLENGTH = 20;
+const QUIZQUESTIONLENGTH = 50;
 const QUESTIONSIZE = 4;
 
 // Number of seconds of the quiz and penalty for an incorrect answer
-const QUIZTIMELENGTH = 120;
+const QUIZTIMELENGTH = 1200;
 const INCORRECTPENALTY = 15;
 
 // Points for each correct question and seconds remaining on the clock
@@ -384,7 +384,7 @@ function endResults() {
 }
 
 function showHUD() {
-    quizHUD.style.display = "block";
+    quizHUD.style.display = "flex";
 }
 
 function hideHUD() {
@@ -417,7 +417,7 @@ function transitionScreen(dst) {
     activeElement.style.display = "none";
     previousElement = activeElement;
     activeElement = dst;
-    activeElement.style.display = "block";
+    activeElement.style.display = "flex";
 }
 
 // Go to the previous screen
@@ -427,18 +427,17 @@ function goBack() {
     let temp = activeElement;
     activeElement = previousElement;
     previousElement = temp;
-    activeElement.style.display = "block";
+    activeElement.style.display = "flex";
 }
 
 init();
 
-let debugSection = document.querySelector("#debug-buttons");
+let debugSection = document.querySelector("#debug-section");
 let resultsButton = debugSection.querySelector("#show-results-screen");
 
 resultsButton.addEventListener("click", showResultsScreen);
 
 let timerTester = document.querySelector("#timer-test");
-// console.debug(timerTester);
 timerTester.addEventListener("click", testTimer);
 
 let questionGenerateTester = document.querySelector("#question-generate-test")
