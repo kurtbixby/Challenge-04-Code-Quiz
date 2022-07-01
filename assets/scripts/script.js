@@ -318,8 +318,12 @@ function saveScore(event) {
     event.preventDefault();
 
     let initialsField = resultsScreenEl.querySelector("input");
+    let initials = initialsField.value;
 
-    let scoreEntry = {initials: initialsField.value, score: finalScore};
+    while (initials.length < 3) {
+        initials = initials.padEnd(3, " ");
+    }
+    let scoreEntry = {initials: initials, score: finalScore};
 
     addScore(scoreEntry);
     writeScores(highScores);

@@ -214,11 +214,13 @@ main {
     display: inline;
     font-size: large;
     font-weight: bold;
+    font-family: 'Courier New', Courier, monospace;
     margin: .5rem;
 }
 
 .scoreboard-initials {
     text-align: left;
+    white-space: pre;
 }
 
 .scoreboard-score {
