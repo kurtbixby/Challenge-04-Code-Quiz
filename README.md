@@ -1,4 +1,4 @@
-# JavaScript Quiz - Boot Camp Challenge 4
+# JavaScript Quiz
 ![Screenshot of the website](docs/images/site-screenshot.png)
 
 Description
