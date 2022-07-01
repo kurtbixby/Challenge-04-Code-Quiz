@@ -18,10 +18,14 @@ button {
 pre {
     font-family: monospace;
     text-align: left;
+    flex-basis: 80%;
+}
+
+.floating-card {
     background-color: var(--color-4);
     border-radius: 1rem;
     padding: 1rem;
-    flex-basis: 80%;
+    box-shadow: 0 1px 2px 1px gray;
 }
 
 #debug-buttons {
@@ -81,6 +85,7 @@ main {
 }
 
 #start-screen #description {
+    padding: .8rem;
     margin: .4rem;
 }
 
@@ -167,6 +172,24 @@ main {
 
 #results-screen {
     display: none;
+}
+
+#score-card {
+    margin-bottom: .5rem;
+}
+
+#score-card p {
+    font-size: large;
+    font-family: monospace;
+    margin: .5rem;
+}
+
+#score-card span {
+    font-weight: bold;
+}
+
+#score-card #total-score {
+    font-size: x-large;
 }
 
 #quiz-hud {

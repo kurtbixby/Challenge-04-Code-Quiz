@@ -1,6 +1,7 @@
 import { allQuestions } from "./questions.js";
 
 const CHOICEBUTTONCLASS = "choice-button";
+const PRECLASS = "floating-card"
 const SCOREBOARDELCLASS = "scoreboard-entry";
 const INITIALSCLASS = "scoreboard-initials";
 const SCORECLASS = "scoreboard-score";
@@ -10,9 +11,9 @@ const QUIZQUESTIONLENGTH = 50;
 const QUESTIONSIZE = 4;
 
 // Number of seconds of the quiz and penalty for an incorrect answer
-const QUIZTIMELENGTH = 1200;
+const QUIZTIMELENGTH = 10;
 const INCORRECTPENALTY = 15;
-const FOOTERTIME = 60000;
+const FOOTERTIME = 2000;
 
 // Points for each correct question and seconds remaining on the clock
 const QUESTIONVALUE = 100;
@@ -44,7 +45,7 @@ let quizQuestionEl = quizScreenEl.querySelector("#quiz-question");
 let questionFooterEl = quizScreenEl.querySelector("#question-footer");
 
 let highScoreScreenEl = document.getElementById("highscore-screen");
-let scoreboardEl = highScoreScreenEl.querySelector("#scoreboard");
+let scoreboardEl = highScoreScreenEl.querySelector("#score-entries");
 
 let resultsScreenEl = document.getElementById("results-screen");
 let questionScoreEl = resultsScreenEl.querySelector("#questions-score");
@@ -244,6 +245,7 @@ function fillQuestionSkeleton(skeleton, question) {
         let snippet = skeleton.querySelector("pre");
         if (snippet === null) {
             snippet = document.createElement("pre");
+            snippet.classList.add(PRECLASS);
         }
         snippet.innerText = question.code;
 
@@ -302,14 +304,14 @@ function populateScoreCard() {
     let timerSubscore = quizTimer.timeRemaining * TIMEVALUE;
     let totalScore = questionSubscore + timerSubscore;
 
-    let questionScoreText = `${questionsCorrect} correct questions X ${QUESTIONVALUE} points = ${questionSubscore}`;
-    questionScoreEl.textContent = questionScoreText;
+    let questionScoreHtml = `<span>${questionsCorrect}</span> CORRECT QUESTIONS X <span>${QUESTIONVALUE}</span> POINTS = <span>${questionSubscore}</span>`;
+    questionScoreEl.innerHTML = questionScoreHtml;
     
-    let timerScoreText = `${quizTimer.timeRemaining} seconds remaining X ${TIMEVALUE} points = ${timerSubscore}`;
-    timerScoreEl.textContent = timerScoreText;
+    let timerScoreHtml = `<span>${quizTimer.timeRemaining}</span> SECONDS REMAINING X <span>${TIMEVALUE}</span> POINTS = <span>${timerSubscore}</span>`;
+    timerScoreEl.innerHTML = timerScoreHtml;
     
-    let totalScoreText = `Your final score is ${totalScore}`;
-    totalScoreEl.textContent = totalScoreText;
+    let totalScoreHtml = `YOUR FINAL SCORE IS <span>${totalScore}</span>`;
+    totalScoreEl.innerHTML = totalScoreHtml;
 }
 
 function saveScore(event) {
@@ -445,7 +447,7 @@ let scoresButton = debugSection.querySelector("#fill-scores");
 scoresButton.addEventListener("click", fillScores);
 
 let resultsButton = debugSection.querySelector("#show-results-screen");
-resultsButton.addEventListener("click", showResultsScreen);
+resultsButton.addEventListener("click", jumpToResults);
 
 let quizButton = debugSection.querySelector("#show-quiz");
 quizButton.addEventListener("click", jumpToQuiz);
@@ -496,6 +498,13 @@ function testQuestionGeneration() {
 
         result = indices.next();
     }
+}
+
+function jumpToResults() {
+    questionsCorrect = 4;
+    quizTimer = new Timer(33, timerText, endQuiz);
+    populateScoreCard();
+    showResultsScreen();
 }
 
 function jumpToQuiz() {

@@ -24,8 +24,8 @@
             <main id="main-content">
                 <div class="section-screen" id="start-screen">
                     <h1>JavaScript Quiz</h1>
-                    <div id="description">
-                        <p>Welcome to this JavaScript quiz!</p>
+                    <div class="floating-card" id="description">
+                        <h2>Welcome to this JavaScript quiz!</h2>
                         <p>This quiz is designed to quiz you on your JavaScript knowledge.</p>
                         <p>You will be scored on the number of correct answers.</p>
                         <p>You will be scored on how much time remains on the clock at the end.</p>
@@ -52,25 +52,29 @@
                 </div>
                 
                 <div class="section-screen" id="highscore-screen">
-                    <h1>High Scores</h1>
-                    <div id="scoreboard"></div>
-                    <div>
-                        <button id="go-back">Close High Scores</button>
-                        <button id="clear-scores">Clear High scores</button>
+                    <div class="floating-card" id="scoreboard">
+                        <h1>High Scores</h1>
+                        <div id="score-entries"></div>
+                        <div>
+                            <button id="go-back">Close High Scores</button>
+                            <button id="clear-scores">Clear High scores</button>
+                        </div>
                     </div>
                 </div>
                 
                 <div class="section-screen" id="results-screen">
-                    <h1>All done!</h1>
-                    <div id="score-card">
-                        <p id="questions-score"></p>
-                        <p id="timer-score"></p>
-                        <p id="total-score"></p>
+                    <div class="floating-card" id="score-card">
+                        <h1>All done!</h1>
+                        <div id="score-breakdown">
+                            <p id="questions-score"></p>
+                            <p id="timer-score"></p>
+                            <p id="total-score"></p>
+                        </div>
+                        <form>
+                            <input oninput="this.value = this.value.toUpperCase()" type="text" maxlength="3" placeholder="Enter your initials" />
+                            <button>Save Score</button>
+                        </form>
                     </div>
-                    <form>
-                        <input oninput="this.value = this.value.toUpperCase()" type="text" maxlength="3" placeholder="Enter your initials" />
-                        <button>Save Score</button>
-                    </form>
                 </div>
                 
                 <hr>
