@@ -7,11 +7,11 @@ const INITIALSCLASS = "scoreboard-initials";
 const SCORECLASS = "scoreboard-score";
 
 // Number of quiz questions and how many options they have
-const QUIZQUESTIONLENGTH = 50;
+const QUIZQUESTIONLENGTH = 20;
 const QUESTIONSIZE = 4;
 
 // Number of seconds of the quiz and penalty for an incorrect answer
-const QUIZTIMELENGTH = 10;
+const QUIZTIMELENGTH = 200;
 const INCORRECTPENALTY = 15;
 const FOOTERTIME = 2000;
 
@@ -434,81 +434,3 @@ function goBack() {
 }
 
 init();
-
-let debugSection = document.querySelector("#debug-section");
-
-let timerTester = document.querySelector("#timer-test");
-timerTester.addEventListener("click", testTimer);
-
-let questionGenerateTester = document.querySelector("#question-generate-test")
-questionGenerateTester.addEventListener("click", testQuestionGeneration);
-
-let scoresButton = debugSection.querySelector("#fill-scores");
-scoresButton.addEventListener("click", fillScores);
-
-let resultsButton = debugSection.querySelector("#show-results-screen");
-resultsButton.addEventListener("click", jumpToResults);
-
-let quizButton = debugSection.querySelector("#show-quiz");
-quizButton.addEventListener("click", jumpToQuiz);
-
-function fillScores() {
-    let dummyScores = [
-        { initials: "QWE", score: 752 },
-        { initials: "QWE", score: 742 },
-        { initials: "QWE", score: 740 },
-        { initials: "QWE", score: 738 },
-        { initials: "QWE", score: 553 },
-        { initials: "QWE", score: 542 },
-        { initials: "QWE", score: 521 },
-        { initials: "QWE", score: 342 },
-        { initials: "QWE", score: 121 },
-        { initials: "QWE", score: 12 },
-    ];
-
-    highScores = dummyScores;
-    populateLeaderBoard();
-}
-
-function someFunctionality() {
-    console.debug("Some Functionality");
-}
-
-function testTimer() {
-    console.debug("testTimer");
-    let timerTextElement = document.querySelector("#timer-time");
-    let thisTimer = new Timer(5, timerTextElement, someFunctionality);
-    thisTimer.start();
-}
-
-function testQuestionGeneration() {
-    console.debug("Testing Question Generation");
-    let indices = chooseQuestionIndices(10, allQuestions.length);
-    
-    let result = indices.next();
-    while (!result.done) {
-        console.debug("Index: " + result.value);
-        let question = allQuestions[result.value];
-        console.debug("Question");
-        console.debug(question);
-
-        let createdElement = createQuestionElement(question);
-
-        quizContainerElement.appendChild(createdElement);
-
-        result = indices.next();
-    }
-}
-
-function jumpToResults() {
-    questionsCorrect = 4;
-    quizTimer = new Timer(33, timerText, endQuiz);
-    populateScoreCard();
-    showResultsScreen();
-}
-
-function jumpToQuiz() {
-    fillQuestionSkeleton(quizQuestionEl, allQuestions[6]);
-    showHUD();
-    showQuiz();
-}
