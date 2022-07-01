@@ -22,7 +22,7 @@ reset.css was provided by the UT Austin Web Development Boot Camp.
 
 Quiz questions were sourced from [InterviewBit](https://www.interviewbit.com/javascript-mcq/).
 
-Favicon sources from [IconArchive](https://iconarchive.com/show/flatwoken-icons-by-alecive/Apps-File-Javascript-icon.html)
+Favicon sourced from [IconArchive](https://iconarchive.com/show/flatwoken-icons-by-alecive/Apps-File-Javascript-icon.html).
 
 ## Collaborators
 __[Andrew E](https://github.com/Andrew87E)__ helped me talk through my ideas and offered some thoughts on approaching some problems.
