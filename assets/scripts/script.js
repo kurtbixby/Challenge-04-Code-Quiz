@@ -320,8 +320,12 @@ function saveScore(event) {
     let initialsField = resultsScreenEl.querySelector("input");
     let initials = initialsField.value;
 
-    while (initials.length < 3) {
-        initials = initials.padEnd(3, " ");
+    if (initials.length < 1) {
+        initials = "---";
+    } else {
+        while (initials.length < 3) {
+            initials = initials.padEnd(3, " ");
+        }
     }
     let scoreEntry = {initials: initials, score: finalScore};
 
