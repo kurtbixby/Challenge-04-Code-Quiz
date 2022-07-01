@@ -366,7 +366,6 @@ function clearScores() {
 
 function loadScores() {
     let retrievedScores = localStorage.getItem(SCORESKEY);
-    console.debug("retrievedScores: " + retrievedScores);
     if (retrievedScores === null) {
         writeScores([]);
     } else {
@@ -377,7 +376,6 @@ function loadScores() {
             clearScores();
         }
     }
-    console.debug(highScores);
 }
 
 function writeScores(scores) {
