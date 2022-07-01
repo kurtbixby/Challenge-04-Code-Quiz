@@ -162,10 +162,6 @@ main {
     padding-bottom: .5rem;
 }
 
-/* #question-footer hr {
-    size: 50px;
-} */
-
 #highscore-screen {
     display: none;
 }
@@ -190,6 +186,47 @@ main {
 
 #score-card #total-score {
     font-size: x-large;
+}
+
+.scores-flexbox {
+    display: flex;
+    flex-flow: row;
+}
+
+.scoreboard-filler {
+    flex: 1 1 30%;
+}
+
+#score-entries {
+    display: flex;
+    flex-flow: column;
+    align-items: stretch;
+    justify-content: space-between;
+    margin-bottom: .4rem;
+}
+
+.scoreboard-entry {
+    display: flex;
+    justify-content: space-between;
+    
+    background-color: var(--color-3);
+    border-radius: .5rem;
+    margin: .1rem;
+}
+
+.scoreboard-entry p {
+    display: inline;
+    font-size: large;
+    font-weight: bold;
+    margin: .5rem;
+}
+
+.scoreboard-initials {
+    text-align: left;
+}
+
+.scoreboard-score {
+    text-align: right;
 }
 
 #quiz-hud {
