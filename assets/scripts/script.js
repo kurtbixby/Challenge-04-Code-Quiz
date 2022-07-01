@@ -56,7 +56,7 @@ let quizQuestionEl = quizScreenEl.querySelector("#quiz-question");
 let questionFooterEl = quizScreenEl.querySelector("#question-footer");
 // High score screen elements
 let highScoreScreenEl = document.getElementById("highscore-screen");
-let scoreboardEl = highScoreScreenEl.querySelector("#score-entries");
+let scoreboardEl = highScoreScreenEl.querySelector(".scores-holder");
 // Results screen elements
 let resultsScreenEl = document.getElementById("results-screen");
 let questionScoreEl = resultsScreenEl.querySelector("#questions-score");

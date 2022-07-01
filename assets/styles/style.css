@@ -7,6 +7,12 @@
     --max-width: 1000px;
 }
 
+/* Make it only take some of the screen */
+main {
+    flex-basis: 55%;
+}
+
+/* Universal button styling */
 button {
     background-color: var(--color-2);
     color: var(--color-4);
@@ -15,12 +21,37 @@ button {
     border-radius: 1rem;
 }
 
+/* Styling for the code snippet sections */
 pre {
     font-family: monospace;
     text-align: left;
     flex-basis: 80%;
 }
 
+/* Styling for the Timer and Score elements in the top bar */
+.hud-element {
+    color: var(--color-4);
+    font-size: large;
+    font-weight: bold;
+    margin: .5rem;
+}
+/* Class for each of the screens */
+.section-screen {
+    display: flex;
+    flex-flow: column;
+    flex-wrap: wrap;
+    align-items: center;
+    text-align: center;
+}
+
+/* Style all of the headers */
+.section-screen h1 {
+    font-size: 1.7rem;
+    font-weight: bold;
+    margin: .4rem;
+}
+
+/* Style for the floating card aesthetic */
 .floating-card {
     background-color: var(--color-4);
     border-radius: 1rem;
@@ -28,6 +59,61 @@ pre {
     box-shadow: 0 1px 2px 1px gray;
 }
 
+/* CSS for the choices in a questions */
+.choice-button {
+    margin: .2rem;
+    box-shadow: 0 1px 1px 1px gray;
+}
+
+/* CSS to style the scoreboard */
+.scores-flexbox {
+    display: flex;
+    flex-flow: row;
+}
+
+/* Filler so the scoreboard looks right */
+.scoreboard-filler {
+    flex: 1 1 30%;
+}
+
+/* Element that holds the scoreboard entries */
+.scores-holder {
+    display: flex;
+    flex-flow: column;
+    align-items: stretch;
+    justify-content: space-between;
+    margin-bottom: .4rem;
+}
+
+/* Actual scoreboard entry */
+.scoreboard-entry {
+    display: flex;
+    justify-content: space-between;
+    
+    background-color: var(--color-3);
+    border-radius: .5rem;
+    margin: .1rem;
+}
+
+/* General styling for the scoreboard text */
+.scoreboard-entry p {
+    display: inline;
+    font-size: large;
+    font-weight: bold;
+    font-family: 'Courier New', Courier, monospace;
+    margin: .5rem;
+}
+
+/* Alignment for the entry components */
+.scoreboard-initials {
+    text-align: left;
+    white-space: pre;
+}
+.scoreboard-score {
+    text-align: right;
+}
+
+/* Style the bar at the top of the screen */
 #header-flex {
     display: flex;
     position: fixed;
@@ -36,7 +122,6 @@ pre {
     justify-content: center;
     z-index: 1;
 }
-
 #header-bar {
     display: flex;
     justify-content: space-between;
@@ -48,76 +133,36 @@ pre {
     box-shadow: 0px 0px 5px 2px;
 }
 
-#highscore-button {
-}
-
-#quiz-hud {
-    display: flex;
-}
-
-.hud-element {
-    color: var(--color-4);
-    font-size: large;
-    font-weight: bold;
-    margin: .5rem;
-}
-
+/* Style the main container */
 #main-flexbox {
     margin-top: 3rem;
     display: flex;
     justify-content: center;
 }
 
-main {
-    flex-basis: 55%;
-}
-
-.section-screen {
-    display: flex;
-    flex-flow: column;
-    flex-wrap: wrap;
-    align-items: center;
-    text-align: center;
-}
-
+/* Stylings for the start screen */
 #start-screen #description {
     padding: .8rem;
     margin: .4rem;
 }
-
 #start-screen p {
     margin: .2rem;
 }
-
 #start-screen button {
     margin-bottom: .8rem;
     font-size: large;
 }
 
-.section-screen h1 {
-    font-size: 1.7rem;
-    font-weight: bold;
-    margin: .4rem;
-}
-
-#start-button {
-    max-width: 30%;
-}
-
-#quiz-screen {
-    display: none;
-}
-
+/* Stylings for the quiz question and the header */
 #quiz-question {
     display: flex;
     justify-content: center;
     flex-flow: column;
 }
-
 #quiz-question h1 {
     text-align: left;
 }
-
+/* Styling for the container that holds the choice buttons */
 #choice-buttons {
     margin: 1rem;
     margin-top: .3rem;
@@ -128,11 +173,7 @@ main {
     flex-flow: column;
 }
 
-.choice-button {
-    margin: .2rem;
-    box-shadow: 0 1px 1px 1px gray;
-}
-
+/* CSS classes for the "Correct/Incorrect" footer */
 #question-footer {
     display: none;
     flex-flow: column;
@@ -140,7 +181,6 @@ main {
     align-items: center;
     width: 100%;
 }
-
 #question-divider {
     height: 1px;
     border-top-style: solid;
@@ -150,7 +190,6 @@ main {
     width: 64%;
     box-shadow: 0 1px 1px 1px gray;
 }
-
 #question-footer p {
     color: var(--color-3);
     font-weight: bold;
@@ -158,75 +197,32 @@ main {
     padding-bottom: .5rem;
 }
 
-#highscore-screen {
-    display: none;
-}
-
-#results-screen {
-    display: none;
-}
-
+/* CSS classes to style the score card on the results screen */
 #score-card {
     margin-bottom: .5rem;
 }
-
 #score-card p {
     font-size: large;
     font-family: monospace;
     margin: .5rem;
 }
-
 #score-card span {
     font-weight: bold;
 }
-
 #score-card #total-score {
     font-size: x-large;
 }
 
-.scores-flexbox {
-    display: flex;
-    flex-flow: row;
+/* CSS to hide the non-default screens */
+#quiz-screen {
+    display: none;
 }
-
-.scoreboard-filler {
-    flex: 1 1 30%;
+#highscore-screen {
+    display: none;
 }
-
-#score-entries {
-    display: flex;
-    flex-flow: column;
-    align-items: stretch;
-    justify-content: space-between;
-    margin-bottom: .4rem;
+#results-screen {
+    display: none;
 }
-
-.scoreboard-entry {
-    display: flex;
-    justify-content: space-between;
-    
-    background-color: var(--color-3);
-    border-radius: .5rem;
-    margin: .1rem;
-}
-
-.scoreboard-entry p {
-    display: inline;
-    font-size: large;
-    font-weight: bold;
-    font-family: 'Courier New', Courier, monospace;
-    margin: .5rem;
-}
-
-.scoreboard-initials {
-    text-align: left;
-    white-space: pre;
-}
-
-.scoreboard-score {
-    text-align: right;
-}
-
 #quiz-hud {
     display: none;
 }
